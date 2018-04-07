@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -64,8 +66,8 @@ public class WordProcessor {
 		 * Note: since map and filter return the updated Stream objects, they can chained together as:
 		 * 		streamOfLines.map(...).filter(a -> ...).map(...) and so on
 		 */
-		
-		return null;
+		Stream<String> streamOfLines = Files.lines(Paths.get(filepath));
+		return streamOfLines.map(String::trim).map(String::toUpperCase).filter(x -> !x.isEmpty() );
 	}
 	
 	/**
@@ -85,8 +87,75 @@ public class WordProcessor {
 	 * @param word2 second word
 	 * @return true if word1 and word2 are adjacent else false
 	 */
+	
 	public static boolean isAdjacent(String word1, String word2) {
-		return false;	
+		int numDifferences = 0; // Track the number of differences
+		// If the words are the same length check for replacement
+		if (word1.length() - word2.length() == 0) {
+			for (int i = 0; i < word1.length(); i ++) {
+				if ( word1.charAt(i) != word2.charAt(i)) {
+					numDifferences += 1;
+				}
+			}
+		}
+		// If word1 is longer check for one addition to word2
+		else if (word1.length() - word2.length() == 1) {
+			int i = 0;
+			int j = 0;
+			while (j < word1.length()) {
+				// Don't compare if i is out of range
+				if (i == word2.length()) {
+					// If i and j are still equal, there is difference at the end of the word
+					if (i == j) {
+						numDifferences ++;
+					}
+				}
+				// Compare if i is in range
+				else if (word1.charAt(j) != word2.charAt(i)) {
+					j ++;
+					numDifferences ++;
+					if (j < word1.length()) {
+						if (word1.charAt(j) != word2.charAt(i)) {
+							numDifferences ++;
+						}
+					}
+				}
+				i ++;
+				j ++;
+			}
+		}
+		// If word2 is longer, check for one addition to word1
+		else if (word1.length() - word2.length() == -1) {
+			int i = 0;
+			int j = 0;
+			while (j < word2.length()) {
+				// Don't compare if i is out of range
+				if (i == word1.length()) {
+					// If i and j are still equal, there is difference at the end of the word
+					if (i == j) {
+						numDifferences ++;
+					}
+				}
+				// Compare if i is in range
+				if ( word2.charAt(j) != word1.charAt(i)) {
+					j ++;
+					numDifferences ++;
+					if (j < word2.length()) {
+						if (word2.charAt(j) != word1.charAt(i)) {
+							numDifferences ++;
+						}
+					}
+				}
+				i ++;
+				j ++;
+			}
+		}
+		if (numDifferences == 1) { // The words are adjacent
+			return true;	
+		}
+		else { // The words are NOT adjacent
+			return false;
+		}
 	}
 	
 }
