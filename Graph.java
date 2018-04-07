@@ -22,6 +22,7 @@ public class Graph<E> implements GraphADT<E> {
     @Override
     public E addVertex(E vertex) {
         
+    	return vertex;
     }
 
     /**
@@ -30,6 +31,7 @@ public class Graph<E> implements GraphADT<E> {
     @Override
     public E removeVertex(E vertex) {
         
+    	return vertex;
     }
 
     /**
@@ -37,7 +39,7 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean addEdge(E vertex1, E vertex2) {
-        
+        return false;
     }    
 
     /**
@@ -45,7 +47,7 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean removeEdge(E vertex1, E vertex2) {
-        
+        return false;
     }
 
     /**
@@ -53,7 +55,7 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean isAdjacent(E vertex1, E vertex2) {
-        
+        return false;
     }
 
     /**
@@ -61,7 +63,7 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getNeighbors(E vertex) {
-        
+        return (Iterable<E>) vertex;
     }
 
     /**
@@ -69,7 +71,8 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getAllVertices() {
-        
+        E itr = null;
+		return (Iterable<E>) itr;
     }
 
 }
