@@ -65,7 +65,7 @@ public class GraphProcessor {
      */
     public Integer populateGraph(String filepath) {
         Stream<String> streamOfLines = WordProcessor.getWordStream(filepath);
-		List<String> listOfStrings = streamOfLines.collect(Collectors.toList());
+	List<String> listOfStrings = streamOfLines.collect(Collectors.toList());
         for (String s : listOfStrings) {
         		// Do something
         }
