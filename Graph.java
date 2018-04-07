@@ -14,7 +14,27 @@ public class Graph<E> implements GraphADT<E> {
     
     /**
      * Instance variables and constructors
-     */
+     */	
+		/**
+	 * Inner class that defines graph nodes which will
+	 * be the objects associated with each vertex.
+	 * 
+	 * @author XTeam 56
+	 *
+	 * @param <E> generic data type to be used for graph
+	 */
+	class GraphNode<E> {
+		
+		E nodeData;
+		boolean visited;
+		HashMap<E,E> neighbors;
+		
+		GraphNode(E data) {
+			this.nodeData = data;
+			this.visited = false;
+			this.neighbors = new HashMap<E,E>();
+		}
+	}
 
     /**
      * {@inheritDoc}
