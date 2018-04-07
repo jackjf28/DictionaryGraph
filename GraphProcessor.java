@@ -64,6 +64,11 @@ public class GraphProcessor {
      * @return Integer the number of vertices (words) added
      */
     public Integer populateGraph(String filepath) {
+        Stream<String> streamOfLines = WordProcessor.getWordStream(filepath);
+		List<String> listOfStrings = streamOfLines.collect(Collectors.toList());
+        for (String s : listOfStrings) {
+        		// Do something
+        }
         return 0;
     
     }
