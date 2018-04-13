@@ -54,11 +54,6 @@ public class Graph<E> implements GraphADT<E> {
 		
 	}
 	
-//	public GraphNode<E> getVertex(E vertex){
-//		int index = vertexList.indexOf(vertex);
-//		return  vertexList.get(index);
-//	}
-	
     /**
      * {@inheritDoc}
      */
