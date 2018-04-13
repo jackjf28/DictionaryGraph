@@ -4,7 +4,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -41,7 +43,7 @@ public class GraphProcessor {
      * Graph which stores the dictionary words and their associated connections
      */
     private GraphADT<String> graph;
-
+    private List<String> shortestPath;
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
      */
@@ -62,15 +64,36 @@ public class GraphProcessor {
      * 
      * @param filepath file path to the dictionary
      * @return Integer the number of vertices (words) added
+     * @throws IOException 
      */
-    public Integer populateGraph(String filepath) {
+    public Integer populateGraph(String filepath) throws IOException {
         Stream<String> streamOfLines = WordProcessor.getWordStream(filepath);
-	List<String> listOfStrings = streamOfLines.collect(Collectors.toList());
+        List<String> listOfStrings = streamOfLines.collect(Collectors.toList());
+        int numVertices = 0;
         for (String s : listOfStrings) {
-        		// Do something
+        	//Add words to the graph
+        	//Duplicate taken care of in Graph.java(?)
+        	graph.addVertex(s);
+        	numVertices++;
         }
-        return 0;
-    
+        //Adds edges to all adjacent words
+        findNeighbors();
+        return numVertices;  
+    }
+    /**
+     * Helper method to add edges for all
+     * adjacent words in the graph.
+     */
+    private void findNeighbors() {
+    	//Nested for-each loop to compare all vertices,
+    	//If anyone can find a more efficient way feel free to edit.
+    	for(String g : graph.getAllVertices()) {
+    		for(String n : graph.getAllVertices()) {
+    			if(WordProcessor.isAdjacent(g, n)) {
+    				graph.addEdge(g, n);
+    			}
+    		}
+    	}
     }
 
     
@@ -87,13 +110,24 @@ public class GraphProcessor {
      *  shortest path between cat and wheat is the following list of words:
      *     [cat, hat, heat, wheat]
      * 
-     * @param word1 first word
-     * @param word2 second word
+     * @param word1 first word, lets make this the 'starting' state
+     * @param word2 second word, this will be the 'goal' state.
      * @return List<String> list of the words
      */
     public List<String> getShortestPath(String word1, String word2) {
-        return null;
+    	bfsSearch(word1, word2);
+//    	graph.getNeighbors(word1);
+    	
+        return null;  
+    } 
     
+    private void bfsSearch(String currNode, String end) {
+    	Queue bfsQueue = new LinkedList();
+    	
+//    	Iterable<String> neighbors = graph.getNeighbors(currNode);
+    	for(String s : graph.getNeighbors(currNode)) {
+    		bfsQueue.add(s);
+    	}
     }
     
     /**
