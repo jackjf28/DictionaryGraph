@@ -17,6 +17,9 @@ public class Graph<E> implements GraphADT<E> {
 		E nodeData;
 		boolean visited;
 		ArrayList<E> neighbors;
+		//To easily find the shortest path from one
+		//GraphNode to another.
+		GraphNode<E> parent;
 		
 		GraphNode(E data) {
 			this.nodeData = data;
@@ -43,7 +46,6 @@ public class Graph<E> implements GraphADT<E> {
      */
 	//List that holds all vertexes in the graph
 	private ArrayList<E> vertexList;
-	
 	private HashMap<E, GraphNode<E>> adjacencyList;
 
 	public Graph() {
@@ -51,6 +53,11 @@ public class Graph<E> implements GraphADT<E> {
 		this.adjacencyList = new HashMap<E, GraphNode<E>>();
 		
 	}
+	
+//	public GraphNode<E> getVertex(E vertex){
+//		int index = vertexList.indexOf(vertex);
+//		return  vertexList.get(index);
+//	}
 	
     /**
      * {@inheritDoc}
@@ -159,7 +166,10 @@ public class Graph<E> implements GraphADT<E> {
     public Iterable<E> getAllVertices() {
         return this.vertexList;
     }
-    
+
+    public GraphNode<E> getGraphNode(E vertex){
+    	return adjacencyList.get(vertex);
+    }
     public String graphToString() {
 		return this.adjacencyList.toString();
     }
