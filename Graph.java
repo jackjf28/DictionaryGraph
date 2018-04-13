@@ -1,7 +1,5 @@
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.ArrayList;
 
 /**
@@ -18,10 +16,12 @@ public class Graph<E> implements GraphADT<E> {
 		
 		E nodeData;
 		boolean visited;
+		ArrayList<E> neighbors;
 		
 		GraphNode(E data) {
 			this.nodeData = data;
 			this.visited = false;
+			this.neighbors = new ArrayList<E>();
 		}
 		
 		public E getData() {
@@ -30,19 +30,6 @@ public class Graph<E> implements GraphADT<E> {
 		
 		public void setData(E newData) {
 			this.nodeData = newData;
-		}
-		
-		@Override
-		public boolean equals(Object graphNode) {
-	        if (((GraphNode<E>)graphNode).getData().equals(this.nodeData)){
-	        	return true;
-	        }
-	        return false;
-		}
-		
-		@Override
-		public int hashCode() {
-			return this.nodeData.hashCode();
 		}
 		
 		@Override
@@ -55,14 +42,13 @@ public class Graph<E> implements GraphADT<E> {
      * Instance variables and constructors
      */
 	//List that holds all vertexes in the graph
-	private HashSet<GraphNode<E>> vertexList;
+	private ArrayList<E> vertexList;
 	
-	//List that holds all edges in the graph
-	private HashMap<GraphNode<E>,ArrayList<GraphNode<E>>> adjacencyList;
+	private HashMap<E, GraphNode<E>> adjacencyList;
 
 	public Graph() {
-		this.vertexList = new HashSet<GraphNode<E>>();
-		this.adjacencyList = new HashMap<GraphNode<E>,ArrayList<GraphNode<E>>>();
+		this.vertexList = new ArrayList<E>();
+		this.adjacencyList = new HashMap<E, GraphNode<E>>();
 		
 	}
 	
@@ -71,9 +57,9 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public E addVertex(E vertex) {
-    	if(vertex != null && !this.vertexList.contains(new GraphNode<E>(vertex))) {
-    		this.vertexList.add(new GraphNode<E>(vertex));
-    		this.adjacencyList.put(new GraphNode<E>(vertex), new ArrayList<GraphNode<E>>());
+    	if(vertex != null && !this.vertexList.contains(vertex)) {
+    		this.vertexList.add(vertex);
+    		this.adjacencyList.put(vertex, new GraphNode<E>(vertex));
     		return vertex;
     	}
     	else {
@@ -86,14 +72,16 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public E removeVertex(E vertex) {
-        if(vertex == null || !this.vertexList.contains(new GraphNode<E>(vertex))) {
+        if(vertex == null || !this.vertexList.contains(vertex)) {
         	return null;
         }
         
         else {
-        	this.vertexList.remove(new GraphNode<E>(vertex));
-        	this.adjacencyList.remove(new GraphNode<E>(vertex));
-        	return vertex;
+        	for(E neighborVertex: this.adjacencyList.get(vertex).neighbors) {
+        		this.adjacencyList.get(neighborVertex).neighbors.remove(vertex);
+        	}
+        	this.vertexList.remove(vertex);
+        	return this.adjacencyList.remove(vertex).nodeData;
         }
     }
 
@@ -102,15 +90,15 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean addEdge(E vertex1, E vertex2) {
-        if(!this.vertexList.contains(new GraphNode<E>(vertex1)) || 
-        		!this.vertexList.contains(new GraphNode<E>(vertex2)) || 
+        if(!this.vertexList.contains(vertex1) || 
+        		!this.vertexList.contains(vertex2) || 
         		vertex1.equals(vertex2)) {
         	return false;
         }
         
         else {
-        	this.adjacencyList.get(new GraphNode<E>(vertex1)).add(new GraphNode<E>(vertex2));
-        	this.adjacencyList.get(new GraphNode<E>(vertex2)).add(new GraphNode<E>(vertex1));
+        	this.adjacencyList.get(vertex2).neighbors.add(vertex1);
+        	this.adjacencyList.get(vertex1).neighbors.add(vertex2);
         	return true;
         }
     }    
@@ -120,15 +108,14 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean removeEdge(E vertex1, E vertex2) {
-        if(!this.vertexList.contains(new GraphNode<E>(vertex1)) || 
-        		!this.vertexList.contains(new GraphNode<E>(vertex2)) || 
+        if(!this.vertexList.contains(vertex1) || 
+        		!this.vertexList.contains(vertex2) || 
         		vertex1.equals(vertex2)) {
         	return false;
         }
-        
         else {
-        	this.adjacencyList.get(new GraphNode<E>(vertex1)).remove(new GraphNode<E>(vertex2));
-        	this.adjacencyList.get(new GraphNode<E>(vertex2)).remove(new GraphNode<E>(vertex1));
+        	this.adjacencyList.get(vertex2).neighbors.remove(vertex1);
+        	this.adjacencyList.get(vertex1).neighbors.remove(vertex2);
         	return true;
         }
     }
@@ -138,14 +125,14 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean isAdjacent(E vertex1, E vertex2) {
-        if(!this.vertexList.contains(new GraphNode<E>(vertex1)) || 
-        		!this.vertexList.contains(new GraphNode<E>(vertex2)) || 
+        if(!this.vertexList.contains(vertex1) || 
+        		!this.vertexList.contains(vertex2) || 
         		vertex1.equals(vertex2)) {
         	return false;
         }
         
         else {
-        	if(this.adjacencyList.get(new GraphNode<E>(vertex1)).contains(new GraphNode<E>(vertex2))) {
+        	if(this.adjacencyList.get(vertex1).neighbors.contains(vertex2)) {
         		return true;
         	}
         	return false;
@@ -157,7 +144,12 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getNeighbors(E vertex) {
-        return (Iterable<E>) this.adjacencyList;
+    	if(vertex != null && this.vertexList.contains(vertex)) {
+    		return this.adjacencyList.get(vertex).neighbors;
+    	}
+    	else {
+    		throw new IllegalArgumentException();
+    	}
     }
 
     /**
@@ -165,11 +157,10 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getAllVertices() {
-        return (Iterable<E>) this.vertexList;
+        return this.vertexList;
     }
     
-    public String hashSetToString() {
-    	System.out.println(this.adjacencyList.toString());
-		return this.vertexList.toString();
+    public String graphToString() {
+		return this.adjacencyList.toString();
     }
 }
