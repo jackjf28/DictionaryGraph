@@ -100,8 +100,7 @@ public class GraphProcessor<E> {
     		}
     	}
     }
-
-    
+  
     /**
      * Gets the list of words that create the shortest path between word1 and word2
      * 
@@ -196,8 +195,12 @@ public class GraphProcessor<E> {
     public Integer getShortestDistance(String word1, String word2) {
     	getShortestPath(word1, word2);
     	//Subtract 1 to account for the starting node
-    	Integer edgeNum = shortestPath.size() - 1;
-        return edgeNum;
+    	if(shortestPath != null) {
+	    	Integer edgeNum = shortestPath.size() - 1;
+	        return edgeNum;
+    	}
+    	//Returns -1 when there is no path from word1 to word2
+    	return -1;
     }
     
     /**
