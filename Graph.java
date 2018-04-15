@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +21,9 @@ public class Graph<E> implements GraphADT<E> {
 		//To easily find the shortest path from one
 		//GraphNode to another.
 		GraphNode<E> parent;
+		//Stores all shortest paths from the GraphNode
+		//to E(The goal word in the dictionary)
+		HashMap<E, List<String>> shortestPaths;
 		
 		GraphNode(E data) {
 			this.nodeData = data;

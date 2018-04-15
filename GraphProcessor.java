@@ -121,10 +121,26 @@ public class GraphProcessor<E> {
     public List<String> getShortestPath(String word1, String word2) {
     	//resets shortestPath to make sure no nodes are left inside
     	shortestPath = new ArrayList<String>();
-    	bfsSearch(word1, word2);   	
+    	//Execute bfsSearch if the start node and goal node aren't 
+    	//the same.
+    	if(word1 != word2) {
+        	bfsSearch(word1, word2);   	
+    	}
+    	//Return a list only containing one String (word1)
+    	else {
+    		shortestPath.add(word1);
+    	}
         return shortestPath;  
     } 
     
+    /**
+     * This helper method implements the Breadth First Search algorithm (an unweighted
+     * 	version of Dijkstra's Algorithm) to find the shortest path between two words
+     * 	in the dictionary.
+     * 
+     * @param currNode currently expanded node, looks at it's children(adjacent nodes)
+     * @param end the goal node we are trying to reach
+     */
     private void bfsSearch(String currNode, String end) {
     	bfsQueue.add(currNode);
     	exploredWords.add(currNode);
@@ -164,6 +180,12 @@ public class GraphProcessor<E> {
     	}
     }
     
+    /**
+     * This method recursively moves from the goal node to the start node, and then
+     *  adds each node in order to List<String> shortestPath.
+     *  
+     * @param graphNodeVal the current node we are at in the Graph
+     */
     private void getPath(String graphNodeVal) {
     	//If this condition is true, that means we have reached the starting node.
     	if( graphNodeVal != null) {
@@ -193,10 +215,12 @@ public class GraphProcessor<E> {
      * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
-    	getShortestPath(word1, word2);
     	//Subtract 1 to account for the starting node
     	if(shortestPath != null) {
-	    	Integer edgeNum = shortestPath.size() - 1;
+    		//Accesses the graphNode word1's HashMap of shortestPaths and returns the size of the
+    		// shortest path to word2
+    		//Also subtracts 1 off of the size to get the correct number of edges in the shortest path.
+    		Integer edgeNum = ((Graph<String>) graph).getGraphNode(word1).shortestPaths.get(word2).size() - 1;
 	        return edgeNum;
     	}
     	//Returns -1 when there is no path from word1 to word2
@@ -209,6 +233,14 @@ public class GraphProcessor<E> {
      * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
      */
     public void shortestPathPrecomputation() {
-    
+    	//Iterates through all possible 'starting' nodes for a given path
+    	for(String s : graph.getAllVertices()) {
+    		//Iterates through all potential 'goal' nodes for a given path
+    		for(String g : graph.getAllVertices()) {
+    			//Assigns a list of the words of a shortest path from word
+    			// s to word g.
+    			((Graph<String>) graph).getGraphNode(s).shortestPaths.put(g, getShortestPath(s,g));
+    		}
+    	}
     }
 }
