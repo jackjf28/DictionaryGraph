@@ -165,7 +165,12 @@ public class Graph<E> implements GraphADT<E> {
     public Iterable<E> getAllVertices() {
         return this.vertexList;
     }
-
+    /**
+     * Returns the graphNode containing data 'vertex'
+     * 
+     * @param vertex the data inside nodeData in the GraphNode class
+     * @return the graphNode with nodeData == vertex.
+     */
     public GraphNode<E> getGraphNode(E vertex){
     	return adjacencyList.get(vertex);
     }
