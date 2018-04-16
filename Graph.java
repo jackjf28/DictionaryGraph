@@ -29,6 +29,7 @@ public class Graph<E> implements GraphADT<E> {
 			this.nodeData = data;
 			this.visited = false;
 			this.neighbors = new ArrayList<E>();
+			this.shortestPaths = new HashMap<E, List<String>>();
 		}
 		
 		public E getData() {
@@ -103,8 +104,12 @@ public class Graph<E> implements GraphADT<E> {
         }
         
         else {
+        	//Condition made so duplicates aren't added to a nodes list of neighbors
+        	if(!this.adjacencyList.get(vertex1).neighbors.contains(vertex2) ||
+        	    !this.adjacencyList.get(vertex2).neighbors.contains(vertex1)) {
         	this.adjacencyList.get(vertex2).neighbors.add(vertex1);
         	this.adjacencyList.get(vertex1).neighbors.add(vertex2);
+        	}
         	return true;
         }
     }    

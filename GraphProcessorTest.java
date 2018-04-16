@@ -52,10 +52,11 @@ public class GraphProcessorTest {
         this.graph = new GraphProcessor<String>();
         try {
             graph.populateGraph("TestWords.txt");
+            graph.shortestPathPrecomputation();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        graph.getShortestDistance("CAT", "SAM").compareTo(3);
+        graph.getShortestDistance("CAT", "SAM").compareTo(2);
     }
 }

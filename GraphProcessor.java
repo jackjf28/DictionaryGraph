@@ -143,19 +143,18 @@ public class GraphProcessor<E> {
      */
     private void bfsSearch(String currNode, String end) {
     	bfsQueue.add(currNode);
-    	exploredWords.add(currNode);
 
     	while(!bfsQueue.isEmpty()){
     		
     		currNode = bfsQueue.remove();
     		exploredWords.add(currNode);
     		//Goal Check
-    		if(currNode == end) {
+    		if(currNode.equals(end)) {
     			getPath(currNode);
     			break;
     		}
     		//Prints out expanded nodes
-    		System.out.println(currNode+ " ");
+//    		System.out.println(currNode+ " ");
 	    	//Iterates through adjacent vertices of the current node.
 	    	for(String word : graph.getNeighbors(currNode)) {
 	    		//Checks to make sure the node hasn't already been
@@ -170,14 +169,6 @@ public class GraphProcessor<E> {
 	    		}
 	    	}   
     	}
-    	//If the bfs Queue is empty that means that
-    	//the goal node wasn't found.
-    	if(bfsQueue.isEmpty()) {
-    		System.out.println("Path to " + end + " was not found.");
-    	}
-    	else {
-    		System.out.println("Goal state found!");
-    	}
     }
     
     /**
@@ -188,14 +179,17 @@ public class GraphProcessor<E> {
      */
     private void getPath(String graphNodeVal) {
     	//If this condition is true, that means we have reached the starting node.
-    	if( graphNodeVal != null) {
+    	if( ((Graph<String>) graph).getGraphNode(graphNodeVal).parent != null) {
     		//Recursively calls up the parent hierarchy of nodes until it reaches the start
     		//node. 
     		getPath(((Graph<String>) graph).getGraphNode(graphNodeVal).parent.nodeData);
     		//Then adds each node on the path to shortestPath in order.
     		shortestPath.add(graphNodeVal);
     	}
-    	return;
+    	//Adds the starting node to the shortest path
+    	else {
+    		shortestPath.add(graphNodeVal);
+    	}
     }
     /**
      * Gets the distance of the shortest path between word1 and word2
@@ -223,6 +217,9 @@ public class GraphProcessor<E> {
     		Integer edgeNum = ((Graph<String>) graph).getGraphNode(word1).shortestPaths.get(word2).size() - 1;
 	        return edgeNum;
     	}
+    	else if(word1.equals(word2)) {
+    		return 0;
+    	}
     	//Returns -1 when there is no path from word1 to word2
     	return -1;
     }
@@ -239,7 +236,9 @@ public class GraphProcessor<E> {
     		for(String g : graph.getAllVertices()) {
     			//Assigns a list of the words of a shortest path from word
     			// s to word g.
-    			((Graph<String>) graph).getGraphNode(s).shortestPaths.put(g, getShortestPath(s,g));
+    			if(!s.equals(g)) {
+    				((Graph<String>) graph).getGraphNode(s).shortestPaths.put(g, getShortestPath(s,g));
+    			}
     		}
     	}
     }
