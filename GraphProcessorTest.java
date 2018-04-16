@@ -140,6 +140,8 @@ public class GraphProcessorTest {
     @Test
     public final void testShortestPath_word_list() {
     	wlGraph.shortestPathPrecomputation();
+        System.out.println(wlGraph.getShortestPath("BELLIES", "JOLLIES"));
+
         expected = "[BELLIES, JELLIES, JOLLIES]";
         actual = "" + wlGraph.getShortestPath("BELLIES", "JOLLIES");
         if (!expected.equals(actual))

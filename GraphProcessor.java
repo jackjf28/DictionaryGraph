@@ -56,8 +56,8 @@ public class GraphProcessor<E> {
      * Graph which stores the dictionary words and their associated connections
      */
     private GraphADT<String> graph;
-    //This monstrosity is so we can keep track of the shortest paths without
-    //needing a public accessor to each GraphNode
+    //Nested Hash map to create a list of shortest paths for all nodes 
+    //to all nodes
     private HashMap<String, HashMap<String, List<String>>> shortestPaths
     				= new HashMap<String, HashMap<String, List<String>>>(); 
 //    private ArrayList<String> shortestPath;
@@ -183,9 +183,9 @@ public class GraphProcessor<E> {
      * 	in the dictionary.
      * 
      * @param currNode currently expanded node, looks at it's children(adjacent nodes)
-     * @param end the goal node we are trying to reach
+     * @param end the goal node we are trying to reach, returns empty list if path isn't found
      */
-    private ArrayList<String> bfsSearch(String start, String currNode, String end) {
+    private ArrayList<String> bfsSearch(String currNode, String end) {
     	bfsQueue.add(currNode);
     	while(!bfsQueue.isEmpty()){		
     		currNode = bfsQueue.remove();
@@ -193,7 +193,7 @@ public class GraphProcessor<E> {
     		//Goal Check, if true, then it adds
     		//the path from word1 to word2 into shortestPath
     		if(currNode.equals(end)) {
-    			ArrayList<String> path = getPath(start, end, currNode);
+    			ArrayList<String> path = getPath(currNode);
     			return path;
     		}
 	    	//Iterates through adjacent vertices of the current node.
@@ -216,13 +216,13 @@ public class GraphProcessor<E> {
      *  
      * @param currGraphNodeVal the current node we are at in the Graph
      */
-    private ArrayList<String> getPath(String start, String end, String currGraphNodeVal) {
+    private ArrayList<String> getPath(String currGraphNodeVal) {
     	ArrayList<String> path = new ArrayList<String>();
     	//If this condition is true, that means we have reached the starting node.
     	if( parent.get(currGraphNodeVal) != null) {
     		//Recursively calls up the parent hierarchy of nodes until it reaches the start
     		//node. 
-    		path = getPath(start, end, parent.get(currGraphNodeVal));
+    		path = getPath(parent.get(currGraphNodeVal));
     		//Then adds each node on the path to shortestPath in order.
     		path.add(currGraphNodeVal);
     	}
@@ -268,7 +268,7 @@ public class GraphProcessor<E> {
 		//Execute bfsSearch if the start node and goal node aren't 
 		//the same.
 		if(word1 != word2) {
-	    	shortestPath = bfsSearch(word1, word1, word2);   	
+	    	shortestPath = bfsSearch(word1, word2);   	
 		}
 	    return shortestPath;  
 	}
