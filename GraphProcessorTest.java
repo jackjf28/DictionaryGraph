@@ -79,31 +79,42 @@ public class GraphProcessorTest {
             int number = popGraph.populateGraph("TestWords.txt").compareTo(numberOfWords);
             System.out.println(number);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            fail("Some error message");
+            fail("IOExcpetion was thrown");
         }
     }
-    
+
     @Test
     public final void testShortestPath() {
-        graph.getShortestPath("CAT", "SAM");
+    		expected = "[CAT, SAT, SAM]";
+        actual = "" + graph.getShortestPath("CAT", "SAM");
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
     }
     
     @Test
     public final void testShortestLength() {
-    	graph.shortestPathPrecomputation();
-        graph.getShortestDistance("CAT", "SAM").compareTo(2);
+    		expected = "2";
+		graph.shortestPathPrecomputation();
+		actual = "" + graph.getShortestDistance("CAT", "SAM");
+		if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
     }
-    
+   
     @Test
     public final void testShortestPathLong() {
-        graph.getShortestPath("CAT", "BADGER");
+    	expected = "[CAT, SAT, SAM, RAM, REAM]";
+        actual = "" + graph.getShortestPath("CAT", "REAM");
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
     }
     
     @Test
     public final void testShortestLengthLong() {
-        graph.shortestPathPrecomputation();
-        graph.getShortestDistance("CAT", "REAM").compareTo(4);
+        expected = "4";
+    		graph.shortestPathPrecomputation();
+        actual = "" + graph.getShortestDistance("CAT", "REAM");
+        if (!expected.equals(actual))
+    			fail("expected: "+expected+ " actual: "+actual);
     }
     
 // File2 tests using word_list.txt
@@ -118,7 +129,6 @@ public class GraphProcessorTest {
     		if (!expected.equals(actual))
     		    fail("expected: "+expected+ " actual: "+actual);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             fail("IOException was thrown");
         }
     }
@@ -133,10 +143,10 @@ public class GraphProcessorTest {
     
     @Test
     public final void testShortestLength_word_list() {
-	expected = "49";
-	wlGraph.shortestPathPrecomputation();
-        actual = "" + wlGraph.getShortestDistance("COMEDO", "CHARGE");
-        if (!expected.equals(actual))
+		expected = "49";
+		wlGraph.shortestPathPrecomputation();
+		actual = "" + wlGraph.getShortestDistance("COMEDO", "CHARGE");
+		if (!expected.equals(actual))
 			fail("expected: "+expected+ " actual: "+actual);
     }
     
@@ -152,11 +162,11 @@ public class GraphProcessorTest {
     
     @Test
     public final void testShortestLengthLong_word_list() {
-	expected = "78";
-	wlGraph.shortestPathPrecomputation();
-        actual = "" + wlGraph.getShortestDistance("CHARGE", "GIMLETS");
-        if (!expected.equals(actual))
-			fail("expected: "+expected+ " actual: "+actual);
+		expected = "78";
+		wlGraph.shortestPathPrecomputation();
+	    actual = "" + wlGraph.getShortestDistance("CHARGE", "GIMLETS");
+	    if (!expected.equals(actual))
+	    		fail("expected: "+expected+ " actual: "+actual);
     }
     
 }
