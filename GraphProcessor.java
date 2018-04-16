@@ -13,7 +13,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -56,10 +55,9 @@ public class GraphProcessor<E> {
      * Graph which stores the dictionary words and their associated connections
      */
     private GraphADT<String> graph;
-    private ArrayList<String> shortestPath = new ArrayList<String>();
-	private Queue<String> bfsQueue = new LinkedList<String>();
-	private ArrayList<String> exploredWords = new ArrayList<String>();
-	private ArrayList<String> inFrontier = new ArrayList<String>();
+    private ArrayList<String> shortestPath;
+	private Queue<String> bfsQueue;
+	private ArrayList<String> exploredWords;
 
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
@@ -131,8 +129,17 @@ public class GraphProcessor<E> {
      * @return List<String> list of the words
      */
     public List<String> getShortestPath(String word1, String word2) {
-    	//resets shortestPath to make sure no nodes are left inside
+    	//Sets all parent of each GraphNode to null to prevent infinite recursion
+    	//when getting the shortest path in bfsSearch()
+    	for(String s : graph.getAllVertices()) {
+    		((Graph<String>) graph).getGraphNode(s).parent = null;
+    	}
+    	//Creates a new shortestPath list for word1 to word2
     	shortestPath = new ArrayList<String>();
+    	//Creates a new queue for the Breadth First Search algorithm
+    	bfsQueue = new LinkedList<String>();
+    	//Creates a list to contain nodes that have been expanded
+    	exploredWords = new ArrayList<String>();
     	//Execute bfsSearch if the start node and goal node aren't 
     	//the same.
     	if(word1 != word2) {
@@ -155,18 +162,15 @@ public class GraphProcessor<E> {
      */
     private void bfsSearch(String currNode, String end) {
     	bfsQueue.add(currNode);
-
-    	while(!bfsQueue.isEmpty()){
-    		
+    	while(!bfsQueue.isEmpty()){		
     		currNode = bfsQueue.remove();
     		exploredWords.add(currNode);
-    		//Goal Check
+    		//Goal Check, if true, then it adds
+    		//the path from word1 to word2 into shortestPath
     		if(currNode.equals(end)) {
     			getPath(currNode);
     			break;
     		}
-    		//Prints out expanded nodes
-//    		System.out.println(currNode+ " ");
 	    	//Iterates through adjacent vertices of the current node.
 	    	for(String word : graph.getNeighbors(currNode)) {
 	    		//Checks to make sure the node hasn't already been

@@ -11,6 +11,7 @@
 // No known bugs
 //
 import java.util.HashMap;
+import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -37,10 +38,10 @@ public class Graph<E> implements GraphADT<E> {
 	class GraphNode<E> {
 		//Data contained in node
 		E nodeData;
-		//Whether or not node has been visited
-		boolean visited;
 		//Vertexes with which the node has an edge
 		ArrayList<E> neighbors;
+		GraphNode<E> parent;
+		HashMap<E, List<String>> shortestPaths;
 		
 		/**
 		 * Constructor initializes each of
@@ -51,8 +52,9 @@ public class Graph<E> implements GraphADT<E> {
 		 */
 		GraphNode(E data) {
 			this.nodeData = data;
-			this.visited = false;
 			this.neighbors = new ArrayList<E>();
+			this.parent = null;
+			this.shortestPaths = new HashMap<E, List<String>>();
 		}
 		
 		/**
@@ -158,9 +160,14 @@ public class Graph<E> implements GraphADT<E> {
         //Add each vertex to the others list of adjacent vertices
     	//Return true
         else {
+        	//Condition made so duplicates aren't added to anodes list of neighbors
+        	if(!this.adjacencyList.get(vertex1).neighbors.contains(vertex2) ||
+        		!this.adjacencyList.get(vertex2).neighbors.contains(vertex1)) {	
         	this.adjacencyList.get(vertex2).neighbors.add(vertex1);
         	this.adjacencyList.get(vertex1).neighbors.add(vertex2);
         	return true;
+        	}
+        	return false;
         }
     }    
 
