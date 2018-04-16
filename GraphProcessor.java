@@ -60,7 +60,6 @@ public class GraphProcessor<E> {
     //to all nodes
     private HashMap<String, HashMap<String, List<String>>> shortestPaths
     				= new HashMap<String, HashMap<String, List<String>>>(); 
-//    private ArrayList<String> shortestPath;
 	private Queue<String> bfsQueue;
 	private ArrayList<String> exploredWords;
 	private HashMap<String, String> parent = new HashMap<String, String>();
