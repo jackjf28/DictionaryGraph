@@ -133,7 +133,8 @@ public class GraphProcessorTest {
 	
     @Test
     public final void testShortestLength_word_list() {
-    		expected = "26";
+		expected = "26";
+		wlGraph.shortestPathPrecomputation();
         actual = "" + wlGraph.getShortestDistance("DEFINE", "SHINNY");
         if (!expected.equals(actual))
 			fail("expected: "+expected+ " actual: "+actual);
