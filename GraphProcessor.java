@@ -13,6 +13,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -55,9 +56,14 @@ public class GraphProcessor<E> {
      * Graph which stores the dictionary words and their associated connections
      */
     private GraphADT<String> graph;
-    private ArrayList<String> shortestPath;
+    //This monstrosity is so we can keep track of the shortest paths without
+    //needing a public accessor to each GraphNode
+    private HashMap<String, HashMap<String, List<String>>> shortestPaths
+    				= new HashMap<String, HashMap<String, List<String>>>(); 
+//    private ArrayList<String> shortestPath;
 	private Queue<String> bfsQueue;
 	private ArrayList<String> exploredWords;
+	private HashMap<String, String> parent = new HashMap<String, String>();
 
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
@@ -132,13 +138,14 @@ public class GraphProcessor<E> {
     	if(word1.equals(word2)) {
     		return new ArrayList<String>();
     	}
-    	//Sets all parent of each GraphNode to null to prevent infinite recursion
+    	//Sets all parent of each word in dictionary to null to prevent infinite recursion
     	//when getting the shortest path in bfsSearch()
     	for(String s : graph.getAllVertices()) {
-    		((Graph<String>) graph).getGraphNode(s).parent = null;
-    	}
+    		parent.put(s, null);
+    	}  	
+    	
     	//Creates a new shortestPath list for word1 to word2
-    	shortestPath = new ArrayList<String>();
+    	ArrayList<String> shortestPath = new ArrayList<String>();
     	//Creates a new queue for the Breadth First Search algorithm
     	bfsQueue = new LinkedList<String>();
     	//Creates a list to contain nodes that have been expanded
@@ -146,11 +153,7 @@ public class GraphProcessor<E> {
     	//Execute bfsSearch if the start node and goal node aren't 
     	//the same.
     	if(word1 != word2) {
-        	bfsSearch(word1, word2);   	
-    	}
-    	//Return a list only containing one String (word1)
-    	else {
-    		shortestPath.add(word1);
+        	shortestPath = bfsSearch(word1, word1, word2);   	
     	}
         return shortestPath;  
     } 
@@ -163,7 +166,7 @@ public class GraphProcessor<E> {
      * @param currNode currently expanded node, looks at it's children(adjacent nodes)
      * @param end the goal node we are trying to reach
      */
-    private void bfsSearch(String currNode, String end) {
+    private ArrayList<String> bfsSearch(String start, String currNode, String end) {
     	bfsQueue.add(currNode);
     	while(!bfsQueue.isEmpty()){		
     		currNode = bfsQueue.remove();
@@ -171,8 +174,8 @@ public class GraphProcessor<E> {
     		//Goal Check, if true, then it adds
     		//the path from word1 to word2 into shortestPath
     		if(currNode.equals(end)) {
-    			getPath(currNode);
-    			break;
+    			ArrayList<String> path = getPath(start, end, currNode);
+    			return path;
     		}
 	    	//Iterates through adjacent vertices of the current node.
 	    	for(String word : graph.getNeighbors(currNode)) {
@@ -181,34 +184,34 @@ public class GraphProcessor<E> {
 	    		if(!exploredWords.contains(word) && !bfsQueue.contains(word)) {
 	    			bfsQueue.add(word);
 	    			//Assigns the currNode as word's parent.
-	    			//Had to typecast to Graph<String> in order to access the 
-	    			// getGraphNode method.
-	    			((Graph<String>) graph).getGraphNode(word).parent = 
-	    								((Graph<String>) graph).getGraphNode(currNode);
+	    			parent.put(word, currNode);
 	    		}
 	    	}   
     	}
+    	return new ArrayList<String>();
     }
     
     /**
      * This method recursively moves from the goal node to the start node, and then
      *  adds each node in order to List<String> shortestPath.
      *  
-     * @param graphNodeVal the current node we are at in the Graph
+     * @param currGraphNodeVal the current node we are at in the Graph
      */
-    private void getPath(String graphNodeVal) {
+    private ArrayList<String> getPath(String start, String end, String currGraphNodeVal) {
+    	ArrayList<String> path = new ArrayList<String>();
     	//If this condition is true, that means we have reached the starting node.
-    	if( ((Graph<String>) graph).getGraphNode(graphNodeVal).parent != null) {
+    	if( parent.get(currGraphNodeVal) != null) {
     		//Recursively calls up the parent hierarchy of nodes until it reaches the start
     		//node. 
-    		getPath(((Graph<String>) graph).getGraphNode(graphNodeVal).parent.nodeData);
+    		path = getPath(start, end, parent.get(currGraphNodeVal));
     		//Then adds each node on the path to shortestPath in order.
-    		shortestPath.add(graphNodeVal);
+    		path.add(currGraphNodeVal);
     	}
     	//Adds the starting node to the shortest path
     	else {
-    		shortestPath.add(graphNodeVal);
+    		path.add(currGraphNodeVal);
     	}
+    	return path;
     }
     /**
      * Gets the distance of the shortest path between word1 and word2
@@ -229,11 +232,11 @@ public class GraphProcessor<E> {
      */
     public Integer getShortestDistance(String word1, String word2) {
     	//Subtract 1 to account for the starting node
-    	if(shortestPath != null) {
+    	if(shortestPaths.get(word1).get(word2) != null) {
     		//Accesses the graphNode word1's HashMap of shortestPaths and returns the size of the
     		// shortest path to word2
     		//Also subtracts 1 off of the size to get the correct number of edges in the shortest path.
-    		Integer edgeNum = ((Graph<String>) graph).getGraphNode(word1).shortestPaths.get(word2).size() - 1;
+    		Integer edgeNum = shortestPaths.get(word1).get(word2).size() - 1;
 	        return edgeNum;
     	}
     	else if(word1.equals(word2)) {
@@ -249,14 +252,17 @@ public class GraphProcessor<E> {
      * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
      */
     public void shortestPathPrecomputation() {
-    	//Iterates through all possible 'starting' nodes for a given path
+    	for(String s : graph.getAllVertices()) {
+    		shortestPaths.put(s, new HashMap<String, List<String>>());
+    	}
+    	//Iterates through all possible 'starting' words for a given path
     	for(String s : graph.getAllVertices()) {
     		//Iterates through all potential 'goal' nodes for a given path
     		for(String g : graph.getAllVertices()) {
     			//Assigns a list of the words of a shortest path from word
     			// s to word g.
     			if(!s.equals(g)) {
-    				((Graph<String>) graph).getGraphNode(s).shortestPaths.put(g, getShortestPath(s,g));
+    				shortestPaths.get(s).put(g, getShortestPath(s,g));
     			}
     		}
     	}

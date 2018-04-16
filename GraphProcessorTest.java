@@ -160,8 +160,7 @@ public class GraphProcessorTest {
             graph.populateGraph("TestWords.txt");
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+       }
         graph.getShortestPath("CAT", "BADGER");
     }
 }

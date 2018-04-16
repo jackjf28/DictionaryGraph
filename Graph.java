@@ -40,8 +40,6 @@ public class Graph<E> implements GraphADT<E> {
 		E nodeData;
 		//Vertexes with which the node has an edge
 		ArrayList<E> neighbors;
-		GraphNode<E> parent;
-		HashMap<E, List<String>> shortestPaths;
 		
 		/**
 		 * Constructor initializes each of
@@ -53,8 +51,6 @@ public class Graph<E> implements GraphADT<E> {
 		GraphNode(E data) {
 			this.nodeData = data;
 			this.neighbors = new ArrayList<E>();
-			this.parent = null;
-			this.shortestPaths = new HashMap<E, List<String>>();
 		}
 		
 		/**
@@ -231,15 +227,7 @@ public class Graph<E> implements GraphADT<E> {
     	//Return list of all vertex values in graph
         return this.vertexList;
     }
-    /**
-     * Returns the graphNode containing data 'vertex'
-     * 
-     * @param vertex the data inside nodeData in the GraphNode class
-     * @return the graphNode with nodeData == vertex.
-     */
-    public GraphNode<E> getGraphNode(E vertex){
-    	return adjacencyList.get(vertex);
-    }
+    
     public String graphToString() {
 		return this.adjacencyList.toString();
     }
