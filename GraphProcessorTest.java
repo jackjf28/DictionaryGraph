@@ -69,7 +69,9 @@ public class GraphProcessorTest {
 		wlGraph = null;
 		popGraph = null;
 	}
-    
+	
+// File1 tests using TestWords.txt
+	
     @Test
     public final void populateGraph() {
         Integer numberOfWords = 8;
@@ -83,33 +85,44 @@ public class GraphProcessorTest {
     }
     
     @Test
+    public final void testShortestPath() {
+        graph.getShortestPath("CAT", "SAM");
+    }
+    
+    @Test
+    public final void testShortestLength() {
+    	graph.shortestPathPrecomputation();
+        graph.getShortestDistance("CAT", "SAM").compareTo(2);
+    }
+    
+    @Test
+    public final void testShortestPathLong() {
+        graph.getShortestPath("CAT", "BADGER");
+    }
+    
+    @Test
+    public final void testShortestLengthLong() {
+        graph.shortestPathPrecomputation();
+        graph.getShortestDistance("CAT", "REAM").compareTo(4);
+    }
+    
+// File2 tests using word_list.txt
+    
+    @Test
     public final void populateGraph_word_list() {
         int numberOfWords = 441;
         try {
             int number = popGraph.populateGraph("word_list.txt").compareTo(numberOfWords);
             expected = "0";
-    			actual = "" + number;
-    			if (!expected.equals(actual))
-    				fail("expected: "+expected+ " actual: "+actual);
+	    actual = "" + number;
+    		if (!expected.equals(actual))
+    		    fail("expected: "+expected+ " actual: "+actual);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             fail("IOException was thrown");
         }
     }
     
-    
-    @Test
-    public final void testShortestPath() {
-        this.graph = new GraphProcessor<String>();
-        try {
-            graph.populateGraph("TestWords.txt");
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        graph.getShortestPath("CAT", "SAM");
-    }
-	
     @Test
     public final void testShortestPath_word_list() {
         expected = "[BELLIES, JELLIES, JOLLIES]";
@@ -119,49 +132,31 @@ public class GraphProcessorTest {
     }
     
     @Test
-    public final void testShortestLength() {
-        this.graph = new GraphProcessor<String>();
-        try {
-            graph.populateGraph("TestWords.txt");
-            graph.shortestPathPrecomputation();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        graph.getShortestDistance("CAT", "SAM").compareTo(2);
-    }
-	
-    @Test
     public final void testShortestLength_word_list() {
-		expected = "26";
-		wlGraph.shortestPathPrecomputation();
-        actual = "" + wlGraph.getShortestDistance("DEFINE", "SHINNY");
+	expected = "49";
+	wlGraph.shortestPathPrecomputation();
+        actual = "" + wlGraph.getShortestDistance("COMEDO", "CHARGE");
         if (!expected.equals(actual))
 			fail("expected: "+expected+ " actual: "+actual);
     }
     
     @Test
-    public final void testShortestLengthLong() {
-        this.graph = new GraphProcessor<String>();
-        try {
-            graph.populateGraph("TestWords.txt");
-            graph.shortestPathPrecomputation();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        graph.getShortestDistance("CAT", "REAM").compareTo(4);
+    public final void testShortestPathLong_word_list() {
+        expected = "[DEFINE, DEFILE, DECILE, DECKLE, HECKLE, HACKLE, HACKEE, HACKER, HANKER, "
+        		+ "RANKER, RANTER, RENTER, RENDER, READER, HEADER, HEALER, SEALER, SCALER, SCARER, "
+        		+ "SHARER, SHAVER, SHIVER, SHINER, WHINER, WHINEY, WHINNY, SHINNY]";
+        actual = "" + wlGraph.getShortestPath("DEFINE", "SHINNY");
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
     }
     
     @Test
-    public final void testShortestPathLong() {
-        this.graph = new GraphProcessor<String>();
-        try {
-            graph.populateGraph("TestWords.txt");
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        graph.getShortestPath("CAT", "BADGER");
+    public final void testShortestLengthLong_word_list() {
+	expected = "78";
+	wlGraph.shortestPathPrecomputation();
+        actual = "" + wlGraph.getShortestDistance("CHARGE", "GIMLETS");
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
     }
+    
 }
