@@ -38,9 +38,11 @@ public class Graph<E> implements GraphADT<E> {
 	class GraphNode<E> {
 		//Data contained in node
 		E nodeData;
-		//Vertexes with which the node has an edge
-		ArrayList<E> neighbors;
+		//Vertices with which the node has an edge
+		ArrayList<E> neighborNodes;
+		//Node prior to this one in a path
 		GraphNode<E> parent;
+		//List of shortest paths to other vertices
 		HashMap<E, List<String>> shortestPaths;
 		
 		/**
@@ -52,7 +54,7 @@ public class Graph<E> implements GraphADT<E> {
 		 */
 		GraphNode(E data) {
 			this.nodeData = data;
-			this.neighbors = new ArrayList<E>();
+			this.neighborNodes = new ArrayList<E>();
 			this.parent = null;
 			this.shortestPaths = new HashMap<E, List<String>>();
 		}
@@ -104,9 +106,16 @@ public class Graph<E> implements GraphADT<E> {
 		
 	}
 	
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * Add new vertex to the graph
+	 * 
+	 * Valid argument conditions:
+	 * 1. vertex should be non-null
+	 * 2. vertex should not already exist in the graph 
+	 * 
+	 * @param vertex the vertex to be added
+	 * @return vertex if vertex added, else return null if vertex can not be added (also if valid conditions are violated)
+	 */
     @Override
     public E addVertex(E vertex) {
     	//Add vertex if preconditions are met
@@ -123,9 +132,16 @@ public class Graph<E> implements GraphADT<E> {
     	}
     }
 
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * Remove the vertex and associated edge associations from the graph
+	 * 
+	 * Valid argument conditions:
+	 * 1. vertex should be non-null
+	 * 2. vertex should exist in the graph 
+	 *  
+	 * @param vertex the vertex to be removed
+	 * @return vertex if vertex removed, else return null if vertex and associated edges can not be removed (also if valid conditions are violated)
+	 */
     @Override
     public E removeVertex(E vertex) {
     	//Return null if preconditions not met
@@ -138,17 +154,25 @@ public class Graph<E> implements GraphADT<E> {
            returning the data that was stored in it.
          */
         else {
-        	for(E neighborVertex: this.adjacencyList.get(vertex).neighbors) {
-        		this.adjacencyList.get(neighborVertex).neighbors.remove(vertex);
+        	for(E neighborVertex: this.adjacencyList.get(vertex).neighborNodes) {
+        		this.adjacencyList.get(neighborVertex).neighborNodes.remove(vertex);
         	}
         	this.vertexList.remove(vertex);
         	return this.adjacencyList.remove(vertex).nodeData;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * Add an edge between two vertices (edge is undirected and unweighted)
+	 * 
+	 * Valid argument conditions:
+	 * 1. both the vertices should exist in the graph
+	 * 2. vertex1 should not equal vertex2
+	 *  
+	 * @param vertex1 the first vertex
+	 * @param vertex2 the second vertex
+	 * @return true if edge added, else return false if edge can not be added (also if valid conditions are violated)
+	 */
     @Override
     public boolean addEdge(E vertex1, E vertex2) {
         //Return false if preconditions not met
@@ -161,19 +185,27 @@ public class Graph<E> implements GraphADT<E> {
     	//Return true
         else {
         	//Condition made so duplicates aren't added to anodes list of neighbors
-        	if(!this.adjacencyList.get(vertex1).neighbors.contains(vertex2) ||
-        		!this.adjacencyList.get(vertex2).neighbors.contains(vertex1)) {	
-        	this.adjacencyList.get(vertex2).neighbors.add(vertex1);
-        	this.adjacencyList.get(vertex1).neighbors.add(vertex2);
+        	if(!this.adjacencyList.get(vertex1).neighborNodes.contains(vertex2) ||
+        		!this.adjacencyList.get(vertex2).neighborNodes.contains(vertex1)) {	
+        	this.adjacencyList.get(vertex2).neighborNodes.add(vertex1);
+        	this.adjacencyList.get(vertex1).neighborNodes.add(vertex2);
         	return true;
         	}
         	return false;
         }
     }    
 
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * Remove the edge between two vertices (edge is undirected and unweighted)
+	 * 
+	 * Valid argument conditions:
+	 * 1. both the vertices should exist in the graph
+	 * 2. vertex1 should not equal vertex2
+	 *  
+	 * @param vertex1 the first vertex
+	 * @param vertex2 the second vertex
+	 * @return true if edge removed, else return false if edge can not be removed (also if valid conditions are violated)
+	 */
     @Override
     public boolean removeEdge(E vertex1, E vertex2) {
     	//Return false if preconditions not met
@@ -185,15 +217,23 @@ public class Graph<E> implements GraphADT<E> {
         //Remove each vertex from the others list of adjacent vertices
     	//Return true
         else {
-        	this.adjacencyList.get(vertex2).neighbors.remove(vertex1);
-        	this.adjacencyList.get(vertex1).neighbors.remove(vertex2);
+        	this.adjacencyList.get(vertex2).neighborNodes.remove(vertex1);
+        	this.adjacencyList.get(vertex1).neighborNodes.remove(vertex2);
         	return true;
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * Check whether the two vertices are adjacent
+	 * 
+	 * Valid argument conditions:
+	 * 1. both the vertices should exist in the graph
+	 * 2. vertex1 should not equal vertex2
+	 *  
+	 * @param vertex1 the first vertex
+	 * @param vertex2 the second vertex
+	 * @return true if both the vertices have an edge with each other, else return false if vertex1 and vertex2 are not connected (also if valid conditions are violated)
+	 */
     @Override
     public boolean isAdjacent(E vertex1, E vertex2) {
     	//Return false if preconditions not met
@@ -202,20 +242,34 @@ public class Graph<E> implements GraphADT<E> {
         		vertex1.equals(vertex2)) {
         	return false;
         }
-        //Return whether or not vertex1's list of adjacent vertices contains vertex2
+        //Return whether or not each vertice's list of adjacent vertices contains the other
         else {
-        		return this.adjacencyList.get(vertex1).neighbors.contains(vertex2);
+        	if(this.adjacencyList.get(vertex1).neighborNodes.contains(vertex2) && 
+        			this.adjacencyList.get(vertex2).neighborNodes.contains(vertex1)) {
+        		return true;
         	}
+        		
+        	else {
+        		return false;
+        	}
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * Get all the neighbor vertices of a vertex
+	 * 
+	 * Valid argument conditions:
+	 * 1. vertex is not null
+	 * 2. vertex exists
+	 * 
+	 * @param vertex the vertex
+	 * @return an iterable for all the immediate connected neighbor vertices
+	 */
     @Override
     public Iterable<E> getNeighbors(E vertex) {
     	//Return list of adjacent vertices if preconditions met
     	if(vertex != null && this.vertexList.contains(vertex)) {
-    		return this.adjacencyList.get(vertex).neighbors;
+    		return this.adjacencyList.get(vertex).neighborNodes;
     	}
     	//Throw exception if they are not
     	else {
@@ -223,9 +277,11 @@ public class Graph<E> implements GraphADT<E> {
     	}
     }
 
-    /**
-     * {@inheritDoc}
-     */
+	/**
+	 * Get all the vertices in the graph
+	 * 
+	 * @return an iterable for all the vertices
+	 */
     @Override
     public Iterable<E> getAllVertices() {
     	//Return list of all vertex values in graph
@@ -239,8 +295,5 @@ public class Graph<E> implements GraphADT<E> {
      */
     public GraphNode<E> getGraphNode(E vertex){
     	return adjacencyList.get(vertex);
-    }
-    public String graphToString() {
-		return this.adjacencyList.toString();
     }
 }

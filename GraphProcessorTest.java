@@ -69,6 +69,191 @@ public class GraphProcessorTest {
 		wlGraph = null;
 		popGraph = null;
 	}
+
+    //Tests for WordProcessor
+    //Each test checks both directions and different word permutations
+    
+    //This tests that two words are adjacent by deletion
+    @Test
+    public void testisAdjacent_deletion_true() {
+    	String[] testStrings = {"catt", "cat", "att", "ctt"};
+    	expected = "true";
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[1]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[2]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[3]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[1], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[2], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[3], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+    }
+    
+    //This tests that two words are adjacent by addition
+    @Test
+    public void testisAdjacent_addition_true() {
+    	String[] testStrings = {"cat", "at", "ct", "ca"};
+    	expected = "true";
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[1]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[2]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[3]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[1], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[2], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[3], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+    }
+    
+    //This tests that two words are adjacent by substitution
+    @Test
+    public void testisAdjacent_substitution_true() {
+    	String[] testStrings = {"cat", "sat", "cst", "cas"};
+    	
+    	expected = "true";
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[1]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[2]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[3]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[1], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[2], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[3], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+    }
+    
+    //This tests that two words are not adjacent by deletion
+    @Test
+    public void testisAdjacent_deletion_false() {
+    	String[] testStrings = {"catt", "baj", "atr", "ckt"};
+    	expected = "false";
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[1]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[2]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[3]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[1], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[2], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[3], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+    }
+    
+    //This tests that two words are not adjacent by addition
+    @Test
+    public void testisAdjacent_addition_false() {
+    	String[] testStrings = {"cat", "ft", "cl", "ja"};
+    	expected = "false";
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[1]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[2]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[3]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[1], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[2], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[3], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+    }
+    
+    //This tests that two words are not adjacent by substitution
+    @Test
+    public void testisAdjacent_substitution_false() {
+    	String[] testStrings = {"cat", "sbt", "csh", "zas"};
+    	
+    	expected = "false";
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[1]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[2]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+    	actual = "" + WordProcessor.isAdjacent(testStrings[0], testStrings[3]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[1], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[2], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+        
+        actual = "" + WordProcessor.isAdjacent(testStrings[3], testStrings[0]);
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+    }
 	
 // File1 tests using TestWords.txt
 	
@@ -77,12 +262,24 @@ public class GraphProcessorTest {
         Integer numberOfWords = 8;
         try {
             int number = popGraph.populateGraph("TestWords.txt").compareTo(numberOfWords);
-            System.out.println(number);
+            if (number != 0)
+                throw new IOException();
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            fail("Some error message");
+            fail("Expected:" + numberOfWords + "but did not get that value.");
         }
     }
+    
+    @Test   
+    public final void fileTest() {
+        try {
+            Integer numberOfWords = 8;
+            int number = popGraph.populateGraph("Stuff").compareTo(numberOfWords);
+            fail("Expected an IOException but did not get one.");
+        } catch (IOException e) {
+        }
+    }
+    
     
     @Test
     public final void testShortestPath() {
@@ -158,5 +355,7 @@ public class GraphProcessorTest {
         if (!expected.equals(actual))
 			fail("expected: "+expected+ " actual: "+actual);
     }
+    
+    
     
 }
