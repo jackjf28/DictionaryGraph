@@ -149,7 +149,7 @@ public class WordProcessor {
 					}
 				}
 				// Compare if i is in range
-				if ( word2.charAt(j) != word1.charAt(i)) {
+				else if (word2.charAt(j) != word1.charAt(i)) {
 					j ++;
 					numDifferences ++;
 					if (j < word2.length()) {
