@@ -28,25 +28,76 @@ import org.junit.Test;
  */
 public class GraphProcessorTest {
     
-    private GraphProcessor<String> graph;
+    private GraphProcessor<String> graph; // Runs tests with TestWords.txt
+    private GraphProcessor<String> wlGraph; // Runs tests with word_list.txt
+    private GraphProcessor<String> popGraph; // Empty so runs populateGraph tests
+    String expected = null;
+	String actual = null;
 
-    @Test
-    public final void createGraph() {
-        this.graph = new GraphProcessor<String>();
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		graph = new GraphProcessor<String>();
+		graph.populateGraph("TestWords.txt");
+		wlGraph = new GraphProcessor<String>();
+		wlGraph.populateGraph("word_list.txt");
+		popGraph = new GraphProcessor<String>();
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+		graph = null;
+		wlGraph = null;
+		popGraph = null;
+	}
     
     @Test
     public final void populateGraph() {
         Integer numberOfWords = 8;
-        this.graph = new GraphProcessor<String>();
         try {
-            int number = graph.populateGraph("TestWords.txt").compareTo(numberOfWords);
+            int number = popGraph.populateGraph("TestWords.txt").compareTo(numberOfWords);
             System.out.println(number);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             fail("Some error message");
         }
     }
+    
+    @Test
+    public final void populateGraph_word_list() {
+        int numberOfWords = 441;
+        try {
+            int number = popGraph.populateGraph("word_list.txt").compareTo(numberOfWords);
+            expected = "0";
+    			actual = "" + number;
+    			if (!expected.equals(actual))
+    				fail("expected: "+expected+ " actual: "+actual);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            fail("IOException was thrown");
+        }
+    }
+    
     
     @Test
     public final void testShortestPath() {
