@@ -129,6 +129,9 @@ public class GraphProcessor<E> {
      * @return List<String> list of the words
      */
     public List<String> getShortestPath(String word1, String word2) {
+    	if(word1.equals(word2)) {
+    		return new ArrayList<String>();
+    	}
     	//Sets all parent of each GraphNode to null to prevent infinite recursion
     	//when getting the shortest path in bfsSearch()
     	for(String s : graph.getAllVertices()) {
