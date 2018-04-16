@@ -56,7 +56,7 @@ public class GraphProcessorTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.print(graph.getShortestPath("CAT", "SAM"));
+        graph.getShortestPath("CAT", "SAM");
     }
     
     @Test
@@ -70,5 +70,30 @@ public class GraphProcessorTest {
             e.printStackTrace();
         }
         graph.getShortestDistance("CAT", "SAM").compareTo(2);
+    }
+    
+    @Test
+    public final void testShortestLengthLong() {
+        this.graph = new GraphProcessor<String>();
+        try {
+            graph.populateGraph("TestWords.txt");
+            graph.shortestPathPrecomputation();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        graph.getShortestDistance("CAT", "REAM").compareTo(4);
+    }
+    
+    @Test
+    public final void testShortestPathLong() {
+        this.graph = new GraphProcessor<String>();
+        try {
+            graph.populateGraph("TestWords.txt");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        graph.getShortestPath("CAT", "BADGER");
     }
 }
