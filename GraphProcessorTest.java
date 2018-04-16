@@ -37,13 +37,14 @@ public class GraphProcessorTest {
     
     @Test
     public final void populateGraph() {
-        int numberOfWords = 4;
+        Integer numberOfWords = 8;
         this.graph = new GraphProcessor<String>();
         try {
-            graph.populateGraph("TestWords.txt").compareTo(numberOfWords);
+            int number = graph.populateGraph("TestWords.txt").compareTo(numberOfWords);
+            System.out.println(number);
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            fail("Some error message");
         }
     }
     
