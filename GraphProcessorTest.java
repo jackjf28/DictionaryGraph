@@ -27,11 +27,10 @@ import org.junit.Test;
  *
  */
 public class GraphProcessorTest {
-    
-    private GraphProcessor<String> graph; // Runs tests with TestWords.txt
-    private GraphProcessor<String> wlGraph; // Runs tests with word_list.txt
-    private GraphProcessor<String> popGraph; // Empty so runs populateGraph tests
-    String expected = null;
+	private GraphProcessor<String> graph; // Runs tests with TestWords.txt
+	private GraphProcessor<String> wlGraph; // Runs tests with word_list.txt
+	private GraphProcessor<String> popGraph; // Empty so runs populateGraph tests
+	String expected = null;
 	String actual = null;
 
 	/**
@@ -39,7 +38,7 @@ public class GraphProcessorTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		
+
 	}
 
 	/**
