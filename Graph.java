@@ -1,3 +1,15 @@
+//
+// Title:           p4 Dictionary Graph 
+// Due Date:        April 16th, 2018
+// Files:           Graph.java, GraphTest.java, WordProcessor.java, GraohProcessor.java, GraphProcessorTest.java
+// Course:          CS 400, Spring 2018
+//
+// Authors:          Brady Erdman, Jay Desai, Sam Fetherstorm, Megan Fischer, Jack Farrell
+// Email:           erdman3@wisc.edu, jdesai2@wisc.edu, sfetherston@wisc.edu, mfischer9@wisc.edu, jfarrell3@wisc.edu 
+// Lecturer's Name: Deb Depeller
+//
+// No known bugs
+//
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
