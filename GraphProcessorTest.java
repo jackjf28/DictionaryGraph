@@ -109,6 +109,14 @@ public class GraphProcessorTest {
         }
         graph.getShortestPath("CAT", "SAM");
     }
+	
+    @Test
+    public final void testShortestPath_word_list() {
+        expected = "[BELLIES, JELLIES, JOLLIES]";
+        actual = "" + wlGraph.getShortestPath("BELLIES", "JOLLIES");
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
+    }
     
     @Test
     public final void testShortestLength() {
@@ -121,6 +129,14 @@ public class GraphProcessorTest {
             e.printStackTrace();
         }
         graph.getShortestDistance("CAT", "SAM").compareTo(2);
+    }
+	
+    @Test
+    public final void testShortestLength_word_list() {
+    		expected = "26";
+        actual = "" + wlGraph.getShortestDistance("DEFINE", "SHINNY");
+        if (!expected.equals(actual))
+			fail("expected: "+expected+ " actual: "+actual);
     }
     
     @Test
