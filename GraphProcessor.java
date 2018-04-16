@@ -13,6 +13,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -55,9 +56,13 @@ public class GraphProcessor<E> {
      * Graph which stores the dictionary words and their associated connections
      */
     private GraphADT<String> graph;
-    private ArrayList<String> shortestPath;
+    //Nested Hash map to create a list of shortest paths for all nodes 
+    //to all nodes
+    private HashMap<String, HashMap<String, List<String>>> shortestPaths
+    				= new HashMap<String, HashMap<String, List<String>>>(); 
 	private Queue<String> bfsQueue;
 	private ArrayList<String> exploredWords;
+	private HashMap<String, String> parent = new HashMap<String, String>();
 
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
@@ -129,41 +134,57 @@ public class GraphProcessor<E> {
      * @return List<String> list of the words
      */
     public List<String> getShortestPath(String word1, String word2) {
-    	if(word1.equals(word2)) {
+    	//Returns shortest path given precomputation result if preconditions are met
+    	if(!word1.equals(word2) || !(shortestPaths.get(word1).get(word2) == null)) {
+    		List<String> shortestPath = shortestPaths.get(word1).get(word2);
+	        return shortestPath;  
+    	}
+    		//Returns empty if looking for path to self or path is not possible
     		return new ArrayList<String>();
-    	}
-    	//Sets all parent of each GraphNode to null to prevent infinite recursion
-    	//when getting the shortest path in bfsSearch()
-    	for(String s : graph.getAllVertices()) {
-    		((Graph<String>) graph).getGraphNode(s).parent = null;
-    	}
-    	//Creates a new shortestPath list for word1 to word2
-    	shortestPath = new ArrayList<String>();
-    	//Creates a new queue for the Breadth First Search algorithm
-    	bfsQueue = new LinkedList<String>();
-    	//Creates a list to contain nodes that have been expanded
-    	exploredWords = new ArrayList<String>();
-    	//Execute bfsSearch if the start node and goal node aren't 
-    	//the same.
-    	if(word1 != word2) {
-        	bfsSearch(word1, word2);   	
-    	}
-    	//Return a list only containing one String (word1)
-    	else {
-    		shortestPath.add(word1);
-    	}
-        return shortestPath;  
-    } 
+    }
     
     /**
+	 * Gets the distance of the shortest path between word1 and word2
+	 * 
+	 * Example: Given a dictionary,
+	 *             cat
+	 *             rat
+	 *             hat
+	 *             neat
+	 *             wheat
+	 *             kit
+	 *  distance of the shortest path between cat and wheat, [cat, hat, heat, wheat]
+	 *   = 3 (the number of edges in the shortest path)
+	 * 
+	 * @param word1 first word
+	 * @param word2 second word
+	 * @return Integer distance
+	 */
+	public Integer getShortestDistance(String word1, String word2) {
+		//Subtract 1 to account for the starting node
+		if(shortestPaths.get(word1).get(word2) != null) {
+			//Accesses the graphNode word1's HashMap of shortestPaths and returns the size of the
+			// shortest path to word2
+			//Also subtracts 1 off of the size to get the correct number of edges in the shortest path.
+			Integer edgeNum = shortestPaths.get(word1).get(word2).size() - 1;
+	        return edgeNum;
+		}
+		else if(word1.equals(word2)) {
+			return 0;
+		}
+		//Returns -1 when there is no path from word1 to word2
+		return -1;
+	}
+
+	/**
      * This helper method implements the Breadth First Search algorithm (an unweighted
      * 	version of Dijkstra's Algorithm) to find the shortest path between two words
      * 	in the dictionary.
      * 
      * @param currNode currently expanded node, looks at it's children(adjacent nodes)
-     * @param end the goal node we are trying to reach
+     * @param end the goal node we are trying to reach, returns empty list if path isn't found
      */
-    private void bfsSearch(String currNode, String end) {
+    private ArrayList<String> bfsSearch(String currNode, String end) {
     	bfsQueue.add(currNode);
     	while(!bfsQueue.isEmpty()){		
     		currNode = bfsQueue.remove();
@@ -171,8 +192,8 @@ public class GraphProcessor<E> {
     		//Goal Check, if true, then it adds
     		//the path from word1 to word2 into shortestPath
     		if(currNode.equals(end)) {
-    			getPath(currNode);
-    			break;
+    			ArrayList<String> path = getPath(currNode);
+    			return path;
     		}
 	    	//Iterates through adjacent vertices of the current node.
 	    	for(String word : graph.getNeighbors(currNode)) {
@@ -181,82 +202,93 @@ public class GraphProcessor<E> {
 	    		if(!exploredWords.contains(word) && !bfsQueue.contains(word)) {
 	    			bfsQueue.add(word);
 	    			//Assigns the currNode as word's parent.
-	    			//Had to typecast to Graph<String> in order to access the 
-	    			// getGraphNode method.
-	    			((Graph<String>) graph).getGraphNode(word).parent = 
-	    								((Graph<String>) graph).getGraphNode(currNode);
+	    			parent.put(word, currNode);
 	    		}
 	    	}   
     	}
+    	return new ArrayList<String>();
     }
     
     /**
      * This method recursively moves from the goal node to the start node, and then
-     *  adds each node in order to List<String> shortestPath.
+     *  adds each node in order to List<String> shortestPath. Used for the BFS method.
      *  
-     * @param graphNodeVal the current node we are at in the Graph
+     * @param currGraphNodeVal the current node we are at in the Graph
      */
-    private void getPath(String graphNodeVal) {
+    private ArrayList<String> getPath(String currGraphNodeVal) {
+    	ArrayList<String> path = new ArrayList<String>();
     	//If this condition is true, that means we have reached the starting node.
-    	if( ((Graph<String>) graph).getGraphNode(graphNodeVal).parent != null) {
+    	if( parent.get(currGraphNodeVal) != null) {
     		//Recursively calls up the parent hierarchy of nodes until it reaches the start
     		//node. 
-    		getPath(((Graph<String>) graph).getGraphNode(graphNodeVal).parent.nodeData);
+    		path = getPath(parent.get(currGraphNodeVal));
     		//Then adds each node on the path to shortestPath in order.
-    		shortestPath.add(graphNodeVal);
+    		path.add(currGraphNodeVal);
     	}
     	//Adds the starting node to the shortest path
     	else {
-    		shortestPath.add(graphNodeVal);
+    		path.add(currGraphNodeVal);
     	}
+    	return path;
     }
     /**
-     * Gets the distance of the shortest path between word1 and word2
-     * 
-     * Example: Given a dictionary,
-     *             cat
-     *             rat
-     *             hat
-     *             neat
-     *             wheat
-     *             kit
-     *  distance of the shortest path between cat and wheat, [cat, hat, heat, wheat]
-     *   = 3 (the number of edges in the shortest path)
-     * 
-     * @param word1 first word
-     * @param word2 second word
-     * @return Integer distance
-     */
-    public Integer getShortestDistance(String word1, String word2) {
-    	//Subtract 1 to account for the starting node
-    	if(shortestPath != null) {
-    		//Accesses the graphNode word1's HashMap of shortestPaths and returns the size of the
-    		// shortest path to word2
-    		//Also subtracts 1 off of the size to get the correct number of edges in the shortest path.
-    		Integer edgeNum = ((Graph<String>) graph).getGraphNode(word1).shortestPaths.get(word2).size() - 1;
-	        return edgeNum;
-    	}
-    	else if(word1.equals(word2)) {
-    		return 0;
-    	}
-    	//Returns -1 when there is no path from word1 to word2
-    	return -1;
-    }
-    
-    /**
+	 * Gets the list of words that create the shortest path between word1 and word2
+	 * 
+	 * Example: Given a dictionary,
+	 *             cat
+	 *             rat
+	 *             hat
+	 *             neat
+	 *             wheat
+	 *             kit
+	 *  shortest path between cat and wheat is the following list of words:
+	 *     [cat, hat, heat, wheat]
+	 * 
+	 * @param word1 first word, lets make this the 'starting' state
+	 * @param word2 second word, this will be the 'goal' state.
+	 * @return List<String> list of the words
+	 */
+	public List<String> shortestPathPrecomputationHelper(String word1, String word2) {
+		if(word1.equals(word2)) {
+			return new ArrayList<String>();
+		}
+		//Sets all parent of each word in dictionary to null to prevent infinite recursion
+		//when getting the shortest path in bfsSearch()
+		for(String s : graph.getAllVertices()) {
+			parent.put(s, null);
+		}  	
+		
+		//Creates a new shortestPath list for word1 to word2
+		ArrayList<String> shortestPath = new ArrayList<String>();
+		//Creates a new queue for the Breadth First Search algorithm
+		bfsQueue = new LinkedList<String>();
+		//Creates a list to contain nodes that have been expanded
+		exploredWords = new ArrayList<String>();
+		//Execute bfsSearch if the start node and goal node aren't 
+		//the same.
+		if(word1 != word2) {
+	    	shortestPath = bfsSearch(word1, word2);   	
+		}
+	    return shortestPath;  
+	}
+
+	/**
      * Computes shortest paths and distances between all possible pairs of vertices.
      * This method is called after every set of updates in the graph to recompute the path information.
      * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
      */
     public void shortestPathPrecomputation() {
-    	//Iterates through all possible 'starting' nodes for a given path
+    	for(String s : graph.getAllVertices()) {
+    		shortestPaths.put(s, new HashMap<String, List<String>>());
+    	}
+    	//Iterates through all possible 'starting' words for a given path
     	for(String s : graph.getAllVertices()) {
     		//Iterates through all potential 'goal' nodes for a given path
     		for(String g : graph.getAllVertices()) {
     			//Assigns a list of the words of a shortest path from word
     			// s to word g.
     			if(!s.equals(g)) {
-    				((Graph<String>) graph).getGraphNode(s).shortestPaths.put(g, getShortestPath(s,g));
+    				shortestPaths.get(s).put(g, shortestPathPrecomputationHelper(s,g));
     			}
     		}
     	}
