@@ -39,10 +39,7 @@ public class Graph<E> implements GraphADT<E> {
 		//Data contained in node
 		E nodeData;
 		//Vertices with which the node has an edge
-		ArrayList<E> neighborNodes;
-		//List of shortest paths to other vertices
-		HashMap<E, List<String>> shortestPaths;
-		
+		ArrayList<E> neighborNodes;	
 		/**
 		 * Constructor initializes each of
 		 * the fields. Node starts off as 
