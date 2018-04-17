@@ -40,8 +40,6 @@ public class Graph<E> implements GraphADT<E> {
 		E nodeData;
 		//Vertices with which the node has an edge
 		ArrayList<E> neighborNodes;
-		//Node prior to this one in a path
-		GraphNode<E> parent;
 		//List of shortest paths to other vertices
 		HashMap<E, List<String>> shortestPaths;
 		
@@ -254,7 +252,6 @@ public class Graph<E> implements GraphADT<E> {
         	}
         }
     }
-
 	/**
 	 * Get all the neighbor vertices of a vertex
 	 * 
@@ -286,14 +283,5 @@ public class Graph<E> implements GraphADT<E> {
     public Iterable<E> getAllVertices() {
     	//Return list of all vertex values in graph
         return this.vertexList;
-    }
-    /**
-     * Returns the graphNode containing data 'vertex'
-     * 
-     * @param vertex the data inside nodeData in the GraphNode class
-     * @return the graphNode with nodeData == vertex.
-     */
-    public GraphNode<E> getGraphNode(E vertex){
-    	return adjacencyList.get(vertex);
     }
 }
